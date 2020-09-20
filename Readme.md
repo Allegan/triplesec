@@ -1,10 +1,11 @@
 # Triple Sec
-A simple, easy to use, JavaScript [Web Crypto API]() wrapper.
+A simple, easy to use, JavaScript [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) wrapper.
 
 ![logo](logo.svg)
 
 # Example
 
+## Encrypt & Decrypt
 ```js
 const password = "hunter2"
 const plainText = "Hello, World!"
@@ -31,4 +32,27 @@ const uncipherText = TripleSec.convert.bytesToStr(uncipher.buff)
 
 // check equality
 console.log(plainText === uncipherText)
+```
+
+## ECDH exchange
+```js
+// generate key-pairs
+let kpa = await TripleSec.ecdh.generateKeyPair()
+let kpb = await TripleSec.ecdh.generateKeyPair()
+
+// exchange and derive AES keys
+let pka = await TripleSec.ecdh.deriveSecretKey(kpa.privateKey, kpb.publicKey)
+let pkb = await TripleSec.ecdh.deriveSecretKey(kpb.privateKey, kpa.publicKey)
+
+// export the keys
+let exa = await TripleSec.export.key(pka)
+let exb = await TripleSec.export.key(pkb)
+
+// show the keys in hex
+console.log(TripleSec.convert.bytesToHex(exa))
+console.log(TripleSec.convert.bytesToHex(exb))
+
+// import the keys
+let ima = await TripleSec.import.key(exa)
+let imb = await TripleSec.import.key(exb)
 ```
