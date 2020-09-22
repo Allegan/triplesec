@@ -5,7 +5,7 @@ A simple, easy to use, JavaScript [Web Crypto API](https://developer.mozilla.org
 
 # Example
 
-## Encrypt & Decrypt
+## v1 Encrypt & Decrypt
 ```js
 const password = "hunter2"
 const plainText = "Hello, World!"
@@ -55,4 +55,28 @@ console.log(TripleSec.convert.bytesToHex(exb))
 // import the keys
 let ima = await TripleSec.import.key(exa)
 let imb = await TripleSec.import.key(exb)
+```
+
+## v2 Encrypt & Decrypt
+```js
+const salt = Salt.generate(16)
+const key = new KeyProvider()
+
+// generate key from password
+await key.fromPassword("hunter2", salt)
+
+// encrypt a plaintext
+const encryptor = new Encryptor(key)
+const plainText = "Hello"
+const encoded = Encoder.strToBytes(plainText)
+const cipherText = await encryptor.encrypt(encoded)
+
+// log ciphertext
+console.log(Encoder.bytesToHex(cipherText.buff))
+
+// decrypt
+const uncipherText = await encryptor.decrypt(cipherText.buff, cipherText.iv)
+
+// log plaintext
+console.log(Encoder.bytesToStr(uncipherText.buff))
 ```
